@@ -106,6 +106,14 @@ class MagicMethodTypeHintsPass implements Pass
                 $this->getMethodDeclaration($method, $namedParameters),
                 $code
             );
+            // remove 'return' from void methods
+            if ($method->getReturnType() === 'void') {
+                $code = preg_replace(
+                    "/(function\s+{$method->getName()}\s*\(.*\)\s*:\s*{$method->getReturnType()}\s*{\s*)return\s+(.+;\s*})/i",
+                    '$1$2',
+                    $code
+                );
+            }
         }
         return $code;
     }
